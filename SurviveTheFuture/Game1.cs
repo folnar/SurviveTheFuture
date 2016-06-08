@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace SurviveTheFuture
+namespace survive_the_future
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,10 +12,33 @@ namespace SurviveTheFuture
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        const int WindowWidth = 1280;
+        const int WindowHeight = 760;
+
+        // click processing
+        bool rightClickStarted = false;
+        bool rightButtonReleased = true;
+
+        GameBoard board;
+        int numrows = 6;
+        int numcols = 16;
+        Vector2 boardCenter = new Vector2(WindowWidth / 2, WindowHeight / 2);
+
+        Texture2D tileTexture;
+        Rectangle drawRectangle;
+
+        Texture2D armyMan;
+        Rectangle gamePieceDrawRectangle;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = WindowWidth;
+            graphics.PreferredBackBufferHeight = WindowHeight;
+
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -40,7 +63,10 @@ namespace SurviveTheFuture
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            tileTexture = Content.Load<Texture2D>(@"graphics\gameboardTile_01");
+            armyMan = Content.Load<Texture2D>(@"graphics\gamePiece_ArmyMan_01");
+
+            board = new GameBoard(tileTexture, boardCenter, numcols, numrows);
         }
 
         /// <summary>
@@ -62,7 +88,23 @@ namespace SurviveTheFuture
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            MouseState mouse = Mouse.GetState();
+
+            if (mouse.RightButton == ButtonState.Pressed && rightButtonReleased)
+            {
+                rightClickStarted = true;
+                rightButtonReleased = false;
+            }
+            else if (mouse.RightButton == ButtonState.Released)
+            {
+                rightButtonReleased = true;
+
+                // if right click finished, add new pickup to list
+                if (rightClickStarted)
+                {
+                    rightClickStarted = false;
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -75,7 +117,14 @@ namespace SurviveTheFuture
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            drawRectangle.Width = tileTexture.Width;
+            drawRectangle.Height = tileTexture.Height;
+
+            board.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
