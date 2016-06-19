@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace survive_the_future
+namespace SurviveTheFuture
 {
     class GameBoard
     {
         #region Fields
 
-        Texture2D tileSprite;
+        static Texture2D tileSprite;
         int halfTileWidth;
         int halfTileHeight;
 
@@ -21,8 +21,8 @@ namespace survive_the_future
         int boardHeight;
         int halfBoardWidth;
         int halfBoardHeight;
-        private int boardOffsetX;
-        private int boardOffsetY;
+        private static int boardOffsetX;
+        private static int boardOffsetY;
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace survive_the_future
         /// <param name="location">location of the center of the gameboard</param>
         /// <param name="numcols">number of columns of tiles on the gameboard</param>
         /// <param name="numrows">number of rows of tiles on the gameboard</param>
-        public GameBoard(Texture2D tile, Vector2 location, int numcols, int numrows)
+        public GameBoard(Texture2D tile, Texture2D tileHighlight, Vector2 location, int numcols, int numrows)
         {
             tileSprite = tile;
 
@@ -51,14 +51,14 @@ namespace survive_the_future
             boardOffsetX = (int)location.X - halfBoardWidth;
             boardOffsetY = (int)location.Y - halfBoardHeight;
 
-            for (int x = 0; x < numrows; x++)
+            for (int y = 0; y < numrows; y++)
             {
-                for (int y = 0; y < numcols; y++)
+                for (int x = 0; x < numcols; x++)
                 {
                     int translatedX = x * tile.Width + halfTileWidth + boardOffsetX;
                     int translatedY = y * tile.Height + halfTileHeight + boardOffsetY;
-                    Vector2 currLocation = new Vector2(translatedY, translatedX);
-                    boardArr.Add(new GameBoardTile(tileSprite, currLocation));
+                    Vector2 currLocation = new Vector2(translatedX, translatedY);
+                    boardArr.Add(new GameBoardTile(tileSprite, tileHighlight, currLocation, x, y));
                 }
             }
         }
@@ -78,6 +78,10 @@ namespace survive_the_future
         /// <param name="mouse">current mouse state</param>
         public void Update(GameTime gameTime, MouseState mouse)
         {
+            foreach (GameBoardTile currTile in boardArr)
+            {
+                currTile.Update(gameTime, mouse);
+            }
         }
 
         /// <summary>
@@ -90,6 +94,24 @@ namespace survive_the_future
             {
                 currTile.Draw(spriteBatch);
             }
+        }
+
+        /// <summary>
+        /// Translates a column index to the x-coordinate of the upper left-hand corner of a tile in that column.
+        /// </summary>
+        /// <param name="col">the index of the column</param>
+        static public int TranslateColumnToX(int col)
+        {
+            return boardOffsetX + col * tileSprite.Width;
+        }
+
+        /// <summary>
+        /// Translates a row index to the y-coordinate of the upper left-hand corner of a tile in that row.
+        /// </summary>
+        /// <param name="row">the index of the row</param>
+        static public int TranslateColumnToY(int row)
+        {
+            return boardOffsetY + row * tileSprite.Height;
         }
 
         #endregion

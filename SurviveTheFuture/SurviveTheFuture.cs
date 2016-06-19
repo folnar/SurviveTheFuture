@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace survive_the_future
+namespace SurviveTheFuture
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class SurviveTheFuture : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -25,20 +26,20 @@ namespace survive_the_future
         Vector2 boardCenter = new Vector2(WindowWidth / 2, WindowHeight / 2);
 
         Texture2D tileTexture;
+        Texture2D tileTextureHighlight;
         Rectangle drawRectangle;
 
-        Texture2D armyMan;
-        Rectangle gamePieceDrawRectangle;
-
-        public Game1()
+        public SurviveTheFuture()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            //graphics.IsFullScreen = true;
             graphics.PreferredBackBufferWidth = WindowWidth;
             graphics.PreferredBackBufferHeight = WindowHeight;
-
             IsMouseVisible = true;
+
+            ResourceRegistry.CM = Content;
         }
 
         /// <summary>
@@ -64,9 +65,11 @@ namespace survive_the_future
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             tileTexture = Content.Load<Texture2D>(@"graphics\gameboardTile_01");
-            armyMan = Content.Load<Texture2D>(@"graphics\gamePiece_ArmyMan_01");
+            ResourceRegistry.Registry.Add(@"graphics\gameboardTile_01", tileTexture);
+            tileTextureHighlight = Content.Load<Texture2D>(@"graphics\gameboardTile_01_highlight");
+            ResourceRegistry.Registry.Add(@"graphics\gameboardTile_01_highlight", tileTextureHighlight);
 
-            board = new GameBoard(tileTexture, boardCenter, numcols, numrows);
+            board = new GameBoard(tileTexture, tileTextureHighlight, boardCenter, numcols, numrows);
         }
 
         /// <summary>
@@ -90,21 +93,7 @@ namespace survive_the_future
 
             MouseState mouse = Mouse.GetState();
 
-            if (mouse.RightButton == ButtonState.Pressed && rightButtonReleased)
-            {
-                rightClickStarted = true;
-                rightButtonReleased = false;
-            }
-            else if (mouse.RightButton == ButtonState.Released)
-            {
-                rightButtonReleased = true;
-
-                // if right click finished, add new pickup to list
-                if (rightClickStarted)
-                {
-                    rightClickStarted = false;
-                }
-            }
+            board.Update(gameTime, mouse);
 
             base.Update(gameTime);
         }
@@ -115,7 +104,7 @@ namespace survive_the_future
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.BurlyWood);
 
             spriteBatch.Begin();
 
