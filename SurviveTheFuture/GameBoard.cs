@@ -35,7 +35,7 @@ namespace SurviveTheFuture
         /// <param name="location">location of the center of the gameboard</param>
         /// <param name="numcols">number of columns of tiles on the gameboard</param>
         /// <param name="numrows">number of rows of tiles on the gameboard</param>
-        public GameBoard(Texture2D tile, Texture2D tileHighlight, Vector2 location, int numcols, int numrows)
+        public GameBoard(Texture2D tile, Texture2D tileHighlight, Vector2 location, int numcols, int numrows, Color[,] tileShadingMap)
         {
             tileSprite = tile;
 
@@ -58,7 +58,7 @@ namespace SurviveTheFuture
                     int translatedX = x * tile.Width + halfTileWidth + boardOffsetX;
                     int translatedY = y * tile.Height + halfTileHeight + boardOffsetY;
                     Vector2 currLocation = new Vector2(translatedX, translatedY);
-                    boardArr.Add(new GameBoardTile(tileSprite, tileHighlight, currLocation, x, y));
+                    boardArr.Add(new GameBoardTile(tileSprite, tileHighlight, currLocation, x, y, tileShadingMap[y,x]));
                 }
             }
         }
@@ -76,11 +76,11 @@ namespace SurviveTheFuture
         /// </summary>
         /// <param name="gameTime">game time</param>
         /// <param name="mouse">current mouse state</param>
-        public void Update(GameTime gameTime, MouseState mouse)
+        public void Update(GameTime gameTime, MouseState mouse, List<GamePiece> pieces)
         {
             foreach (GameBoardTile currTile in boardArr)
             {
-                currTile.Update(gameTime, mouse);
+                currTile.Update(gameTime, mouse, pieces, boardArr);
             }
         }
 
@@ -88,11 +88,11 @@ namespace SurviveTheFuture
         /// Draws the gameboard
         /// </summary>
         /// <param name="spriteBatch">sprite batch</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, List<GamePiece> pieces)
         {
             foreach (GameBoardTile currTile in boardArr)
             {
-                currTile.Draw(spriteBatch);
+                currTile.Draw(spriteBatch, pieces);
             }
         }
 

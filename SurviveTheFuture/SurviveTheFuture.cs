@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,17 +18,35 @@ namespace SurviveTheFuture
         const int WindowHeight = 760;
 
         // click processing
-        bool rightClickStarted = false;
-        bool rightButtonReleased = true;
+        //bool rightClickStarted = false;
+        //bool rightButtonReleased = true;
 
         GameBoard board;
         int numrows = 6;
         int numcols = 16;
         Vector2 boardCenter = new Vector2(WindowWidth / 2, WindowHeight / 2);
+        private Color[,] tileShadingMap = new Color[6, 16]
+        {
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+            { Color.LightSkyBlue, Color.LightSkyBlue, Color.LightSkyBlue, Color.White, Color.White, Color.White, Color.White, Color.White,
+                Color.White, Color.White, Color.White, Color.White, Color.White, Color.LightGray, Color.LightGray, Color.LightGray },
+        };
 
         Texture2D tileTexture;
         Texture2D tileTextureHighlight;
         Rectangle drawRectangle;
+
+        // pieces contained on tile
+        List<GamePiece> pieces = new List<GamePiece>();
 
         public SurviveTheFuture()
         {
@@ -50,8 +69,6 @@ namespace SurviveTheFuture
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -69,7 +86,14 @@ namespace SurviveTheFuture
             tileTextureHighlight = Content.Load<Texture2D>(@"graphics\gameboardTile_01_highlight");
             ResourceRegistry.Registry.Add(@"graphics\gameboardTile_01_highlight", tileTextureHighlight);
 
-            board = new GameBoard(tileTexture, tileTextureHighlight, boardCenter, numcols, numrows);
+            board = new GameBoard(tileTexture, tileTextureHighlight, boardCenter, numcols, numrows, tileShadingMap);
+
+            // Add initial army men surrounding base houses.
+            for (int i = 0; i < numrows; i++)
+            {
+                pieces.Add(new GP_ArmyMan(i, 3, tileTexture.Width, tileTexture.Height));
+                pieces.Add(new GP_ArmyMan(i, 12, tileTexture.Width, tileTexture.Height));
+            }
         }
 
         /// <summary>
@@ -93,7 +117,7 @@ namespace SurviveTheFuture
 
             MouseState mouse = Mouse.GetState();
 
-            board.Update(gameTime, mouse);
+            board.Update(gameTime, mouse, pieces);
 
             base.Update(gameTime);
         }
@@ -111,7 +135,7 @@ namespace SurviveTheFuture
             drawRectangle.Width = tileTexture.Width;
             drawRectangle.Height = tileTexture.Height;
 
-            board.Draw(spriteBatch);
+            board.Draw(spriteBatch, pieces);
 
             spriteBatch.End();
 

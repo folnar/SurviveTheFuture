@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,6 +22,7 @@ namespace SurviveTheFuture
         int halfDrawRectangleWidth;
         int halfDrawRectangleHeight;
         Vector2 location;
+        Color tileShading;
 
         // click processing
         bool leftClickStarted = false;
@@ -28,9 +30,6 @@ namespace SurviveTheFuture
         bool rightClickStarted = false;
         bool rightButtonReleased = true;
         bool isSelected = false;
-
-        // pieces contained on tile
-        List<GamePiece> pieces = new List<GamePiece>();
 
         #endregion
 
@@ -41,13 +40,14 @@ namespace SurviveTheFuture
         /// </summary>
         /// <param name="sprite">sprite for the tile texture</param>
         /// <param name="location">location of the center of the tile</param>
-        public GameBoardTile(Texture2D sprite, Texture2D tileHighlight, Vector2 location, int x, int y)
+        public GameBoardTile(Texture2D sprite, Texture2D tileHighlight, Vector2 location, int x, int y, Color tileShading)
         {
             this.sprite = sprite;
             spriteHighlight = tileHighlight;
             this.location = location;
             boardCol = x;
             boardRow = y;
+            this.tileShading = tileShading;
 
             // Set draw rectangle so tile is centered on location
             drawRectangle = new Rectangle((int)location.X - sprite.Width / 2,
@@ -56,11 +56,6 @@ namespace SurviveTheFuture
             // Set halfDrawRectangleWidth and halfDrawRectangleHeight for efficiency.
             halfDrawRectangleHeight = drawRectangle.Height / 2;
             halfDrawRectangleWidth = drawRectangle.Width / 2;
-
-            if (x == 3 || x == 12)
-            {
-                pieces.Add(new GP_ArmyMan(boardRow, boardCol, drawRectangle.Width, drawRectangle.Height));
-            }
         }
 
         #endregion
@@ -76,7 +71,7 @@ namespace SurviveTheFuture
         /// </summary>
         /// <param name="gameTime">game time</param>
         /// <param name="mouse">current mouse state</param>
-        public void Update(GameTime gameTime, MouseState mouse)
+        public void Update(GameTime gameTime, MouseState mouse, List<GamePiece> pieces, List<GameBoardTile> boardArr)
         {
             // check for mouse over tile
             if (drawRectangle.Contains(mouse.X, mouse.Y))
@@ -95,13 +90,19 @@ namespace SurviveTheFuture
                     // if click finished on tile, ...
                     if (leftClickStarted)
                     {
-                        if (pieces.Count > 0)
+                        if (pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().Count > 0)
                         {
                             isSelected = !isSelected;
+                            // Unselect all pieces.
+                            pieces.ForEach(u => u.IsSelected = false);
+                            // Select the pieces in this tile.
+                            pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().ForEach(s => s.IsSelected = !s.IsSelected);
                         }
                         else
                         {
-                            pieces.Add(new GP_ArmyMan(boardRow, boardCol, drawRectangle.Width, drawRectangle.Height));
+                            boardArr.ForEach(u => u.isSelected = false);
+                            //isSelected = true;
+                            pieces.Where(s => s.IsSelected).ToList().ForEach(s => s.Move(boardRow, boardCol));
                         }
                         leftClickStarted = false;
                     }
@@ -140,24 +141,10 @@ namespace SurviveTheFuture
         /// Draws the tile
         /// </summary>
         /// <param name="spriteBatch">sprite batch</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, List<GamePiece> pieces)
         {
-            // Use the sprite batch to draw the tile.
-            if (boardCol < 3)
-            {
-                spriteBatch.Draw(sprite, drawRectangle, Color.LightSkyBlue);
+            spriteBatch.Draw(sprite, drawRectangle, tileShading);
 
-            }
-            else if (boardCol > 12)
-            {
-                spriteBatch.Draw(sprite, drawRectangle, Color.LightGray);
-
-            }
-            else
-            {
-                spriteBatch.Draw(sprite, drawRectangle, Color.White);
-
-            }
             if (isSelected)
             {
                 spriteBatch.Draw(spriteHighlight, drawRectangle, Color.White);

@@ -27,6 +27,36 @@ namespace SurviveTheFuture
         //protected bool isInHand = false;
         //protected bool isOnBoard = false;
 
+        protected int legalMoves;
+
+        #endregion
+
+        #region Properties
+
+        public int BoardRow
+        {
+            get
+            {
+                return boardRow;
+            }
+            set
+            {
+                boardRow = value;
+            }
+        }
+        public int BoardCol
+        {
+            get
+            {
+                return boardCol;
+            }
+            set
+            {
+                boardCol = value;
+            }
+        }
+        public bool IsSelected { get; set; }
+
         #endregion
 
         #region Constructors
@@ -49,6 +79,8 @@ namespace SurviveTheFuture
         /// <param name="tileHeight">height of the gameboard tile containing the piece</param>
         public GamePiece(string spriteName, int row, int col, int tileWidth, int tileHeight)
         {
+            IsSelected = false;
+
             if (ResourceRegistry.Registry.ContainsKey(spriteName))
             {
                 sprite = ResourceRegistry.Registry[spriteName];
@@ -76,9 +108,28 @@ namespace SurviveTheFuture
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
 
+        public void Move(int row, int col)
+        {
+            boardRow = row;
+            boardCol = col;
+
+            moveDrawRectangle();
+        }
+
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Moves the draw rectangle to a new gameboard tile.
+        /// </summary>
+        protected void moveDrawRectangle()
+        {
+            int xpos = GameBoard.TranslateColumnToX(boardCol) + tileOffsetX;
+            int ypos = GameBoard.TranslateColumnToY(boardRow) + tileOffsetX;
+            drawRectangle.X = xpos;
+            drawRectangle.Y = ypos;
+        }
 
         /// <summary>
         /// Sets the draw rectangle to be on the current gameboard tile.
