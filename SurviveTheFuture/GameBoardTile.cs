@@ -12,24 +12,24 @@ namespace SurviveTheFuture
         #region Fields
 
         // board coordinates
-        int boardRow;
-        int boardCol;
+        private int boardRow;
+        private int boardCol;
 
         // drawing support
-        Texture2D sprite;
-        Texture2D spriteHighlight;
-        Rectangle drawRectangle;
-        int halfDrawRectangleWidth;
-        int halfDrawRectangleHeight;
-        Vector2 location;
-        Color tileShading;
+        private Texture2D sprite;
+        private Texture2D spriteHighlight;
+        private Rectangle drawRectangle;
+        private int halfDrawRectangleWidth;
+        private int halfDrawRectangleHeight;
+        private Vector2 location;
+        private Color tileShading;
 
         // click processing
-        bool leftClickStarted = false;
-        bool leftButtonReleased = true;
-        bool rightClickStarted = false;
-        bool rightButtonReleased = true;
-        bool isSelected = false;
+        private bool leftClickStarted = false;
+        private bool leftButtonReleased = true;
+        private bool rightClickStarted = false;
+        private bool rightButtonReleased = true;
+        private bool isSelected = false;
 
         #endregion
 
@@ -39,7 +39,11 @@ namespace SurviveTheFuture
         /// Constructor
         /// </summary>
         /// <param name="sprite">sprite for the tile texture</param>
+        /// <param name="tileHighlight">overlay sprite for the highlighted tile</param>
         /// <param name="location">location of the center of the tile</param>
+        /// <param name="x">the board column of this tile</param>
+        /// <param name="y">the board row of this tile</param>
+        /// <param name="tileShading">the color with which this tile is drawn (def: Color.White)</param>
         public GameBoardTile(Texture2D sprite, Texture2D tileHighlight, Vector2 location, int x, int y, Color tileShading)
         {
             this.sprite = sprite;
@@ -71,6 +75,8 @@ namespace SurviveTheFuture
         /// </summary>
         /// <param name="gameTime">game time</param>
         /// <param name="mouse">current mouse state</param>
+        /// <param name="pieces">a list of current game pieces</param>
+        /// <param name="boardArr">a list of game board tiles</param>
         public void Update(GameTime gameTime, MouseState mouse, List<GamePiece> pieces, List<GameBoardTile> boardArr)
         {
             // check for mouse over tile
@@ -90,19 +96,40 @@ namespace SurviveTheFuture
                     // if click finished on tile, ...
                     if (leftClickStarted)
                     {
+                        // This if() dictates that only board tiles which contain pieces may be highlighted.
                         if (pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().Count > 0)
                         {
+                            // Toggle the selected state of this board tile.
                             isSelected = !isSelected;
                             // Unselect all pieces.
                             pieces.ForEach(u => u.IsSelected = false);
-                            // Select the pieces in this tile.
-                            pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().ForEach(s => s.IsSelected = !s.IsSelected);
+                            // Select the pieces in this tile only if the tile is highlighted / selected.
+                            if (isSelected)
+                            {
+                                pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow)
+                                      .ToList()
+                                      .ForEach(s => s.IsSelected = !s.IsSelected);
+
+                                // Highlight the squares to which the selected piece(s) can legally move.
+                                // THE FOLLOWING CODE JUST HIGHLIGHTS THE ENTIRE ROW AND COLUMN OF THE PIECE
+                                // SELECTED. THIS NEEDS TO BE FIXED. EACH PIECE SHOULD HAVE A MOVEDEF 2D ARRAY
+                                // LIKE THE ONE IN THE NOTES. SEE NOTE 2-A.
+                                boardArr.Where(s => s.boardCol == boardCol).ToList().ForEach(s => s.isSelected = true);
+                                boardArr.Where(s => s.boardRow == boardRow).ToList().ForEach(s => s.isSelected = true);
+                            }
+                            else
+                            {
+                                boardArr.ForEach(s => s.isSelected = false);
+                            }
                         }
                         else
                         {
+                            // Unselect all board tiles.
                             boardArr.ForEach(u => u.isSelected = false);
-                            //isSelected = true;
+                            // Move the selected piece(s) to the new board tile.
                             pieces.Where(s => s.IsSelected).ToList().ForEach(s => s.Move(boardRow, boardCol));
+                            // Unselect all pieces.
+                            pieces.ForEach(u => u.IsSelected = false);
                         }
                         leftClickStarted = false;
                     }
@@ -121,8 +148,14 @@ namespace SurviveTheFuture
                     // if click finished on tile, ...
                     if (rightClickStarted)
                     {
-                        pieces.Clear();
-                        isSelected = false;
+                        //pieces.Clear();
+                        //isSelected = false;
+
+                        // HERE IS WHERE WE NEED TO BUILD THE POPUP MENU. WE'LL NEED A POPUP
+                        // MENU CLASS FOR OPTIONS AND SAVING AND WHATNOT AND AN OBJECT WITH
+                        // HIDE() AND SHOW() METHODS AS WELL AS LOCATIONN PROPERTIES WHICH
+                        // WILL BE SET BY WHERE THE CURSOR IS WHEN THIS RIGHT-CLICK OCCURS.
+
                         rightClickStarted = false;
                     }
                 }
@@ -141,8 +174,10 @@ namespace SurviveTheFuture
         /// Draws the tile
         /// </summary>
         /// <param name="spriteBatch">sprite batch</param>
+        /// <param name="pieces">a list of current game pieces</param>
         public void Draw(SpriteBatch spriteBatch, List<GamePiece> pieces)
         {
+            // The tileShading of this tile is determined by the tileShadeMap in SurviveTheFuture.cs.
             spriteBatch.Draw(sprite, drawRectangle, tileShading);
 
             if (isSelected)
@@ -150,11 +185,8 @@ namespace SurviveTheFuture
                 spriteBatch.Draw(spriteHighlight, drawRectangle, Color.White);
             }
 
-            // Draw the pieces in the this tile.
-            foreach (GamePiece gp in pieces)
-            {
-                gp.Draw(spriteBatch);
-            }
+            // Draw the pieces in this tile.
+            pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().ForEach(s => s.Draw(spriteBatch));
         }
 
         #endregion
