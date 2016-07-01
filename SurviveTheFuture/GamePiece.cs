@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SurviveTheFuture
 {
-    public class GamePiece
+    abstract public class GamePiece
     {
         #region Fields
 
@@ -27,11 +27,11 @@ namespace SurviveTheFuture
         //protected bool isInHand = false;
         //protected bool isOnBoard = false;
 
-        protected int legalMoves;
-
         #endregion
 
         #region Properties
+
+        abstract public int[,] MoveMatrix { get; set; }
 
         public int BoardRow
         {
@@ -44,6 +44,7 @@ namespace SurviveTheFuture
                 boardRow = value;
             }
         }
+
         public int BoardCol
         {
             get

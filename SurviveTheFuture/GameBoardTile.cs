@@ -101,8 +101,11 @@ namespace SurviveTheFuture
                         {
                             // Toggle the selected state of this board tile.
                             isSelected = !isSelected;
+                            
                             // Unselect all pieces.
                             pieces.ForEach(u => u.IsSelected = false);
+                            //boardArr.ForEach(s => s.isSelected = false);
+
                             // Select the pieces in this tile only if the tile is highlighted / selected.
                             if (isSelected)
                             {
@@ -111,11 +114,17 @@ namespace SurviveTheFuture
                                       .ForEach(s => s.IsSelected = !s.IsSelected);
 
                                 // Highlight the squares to which the selected piece(s) can legally move.
-                                // THE FOLLOWING CODE JUST HIGHLIGHTS THE ENTIRE ROW AND COLUMN OF THE PIECE
-                                // SELECTED. THIS NEEDS TO BE FIXED. EACH PIECE SHOULD HAVE A MOVEDEF 2D ARRAY
-                                // LIKE THE ONE IN THE NOTES. SEE NOTE 2-A.
-                                boardArr.Where(s => s.boardCol == boardCol).ToList().ForEach(s => s.isSelected = true);
-                                boardArr.Where(s => s.boardRow == boardRow).ToList().ForEach(s => s.isSelected = true);
+                                // See Note 2-A.
+                                List<int[,]> legalMoves = new List<int[,]>();
+                                pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().ForEach(s => legalMoves.Add(s.MoveMatrix));
+
+                                // This selects legal moves to the left and right.
+                                boardArr
+                                    .Where(s => s.boardCol >= (boardCol - legalMoves[0][1, 0]) && 
+                                                s.boardCol <= (boardCol + legalMoves[0][1, 2]) &&
+                                                s.boardRow == boardRow)
+                                    .ToList()
+                                    .ForEach(s => s.isSelected = true);
                             }
                             else
                             {
