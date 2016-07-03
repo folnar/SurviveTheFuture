@@ -78,7 +78,7 @@ namespace SurviveTheFuture
         /// <param name="col">index of the column on which the piece resides</param>
         /// <param name="tileWidth">width of the gameboard tile containing the piece</param>
         /// <param name="tileHeight">height of the gameboard tile containing the piece</param>
-        public GamePiece(string spriteName, int row, int col, int tileWidth, int tileHeight)
+        public GamePiece(string spriteName, int row, int col, int tileWidth, int tileHeight, bool flipMoveMatrix)
         {
             IsSelected = false;
 
@@ -93,6 +93,8 @@ namespace SurviveTheFuture
             }
 
             _init(row, col, tileWidth, tileHeight);
+
+            if (flipMoveMatrix) { _flipMoveMatrix(); }
         }
 
         #endregion
@@ -161,5 +163,18 @@ namespace SurviveTheFuture
         }
 
         #endregion
+
+        protected void _flipMoveMatrix()
+        {
+            int[,] retval = new int[3, 3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    retval[i, j] = MoveMatrix[i, 2 - j];
+                }
+            }
+            MoveMatrix = retval;
+        }
     }
 }

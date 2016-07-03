@@ -104,11 +104,11 @@ namespace SurviveTheFuture
                             
                             // Unselect all pieces.
                             pieces.ForEach(u => u.IsSelected = false);
-                            //boardArr.ForEach(s => s.isSelected = false);
 
                             // Select the pieces in this tile only if the tile is highlighted / selected.
                             if (isSelected)
                             {
+                                boardArr.ForEach(s => s.isSelected = false);
                                 pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow)
                                       .ToList()
                                       .ForEach(s => s.IsSelected = !s.IsSelected);
@@ -118,11 +118,22 @@ namespace SurviveTheFuture
                                 List<int[,]> legalMoves = new List<int[,]>();
                                 pieces.Where(s => s.BoardCol == boardCol && s.BoardRow == boardRow).ToList().ForEach(s => legalMoves.Add(s.MoveMatrix));
 
+                                // NOTE: The following selection of legal moves code only considers the 0th indexed
+                                //       piece on this tile. The case of multiple pieces needs to be handled at some
+                                //       in the future. It may end up that multiple pieces are disallowed.
                                 // This selects legal moves to the left and right.
                                 boardArr
-                                    .Where(s => s.boardCol >= (boardCol - legalMoves[0][1, 0]) && 
+                                    .Where(s => s.boardCol >= (boardCol - legalMoves[0][1, 0]) &&
                                                 s.boardCol <= (boardCol + legalMoves[0][1, 2]) &&
                                                 s.boardRow == boardRow)
+                                    .ToList()
+                                    .ForEach(s => s.isSelected = true);
+
+                                // This selects legal moves up and down.
+                                boardArr
+                                    .Where(s => s.boardRow >= (boardRow - legalMoves[0][0, 1]) &&
+                                                s.boardRow <= (boardRow + legalMoves[0][2, 1]) &&
+                                                s.boardCol == boardCol)
                                     .ToList()
                                     .ForEach(s => s.isSelected = true);
                             }
@@ -133,12 +144,16 @@ namespace SurviveTheFuture
                         }
                         else
                         {
-                            // Unselect all board tiles.
-                            boardArr.ForEach(u => u.isSelected = false);
-                            // Move the selected piece(s) to the new board tile.
-                            pieces.Where(s => s.IsSelected).ToList().ForEach(s => s.Move(boardRow, boardCol));
-                            // Unselect all pieces.
-                            pieces.ForEach(u => u.IsSelected = false);
+                            // Only allow a move if this tile is selected, i.e. is a legal move for the currently selected piece.
+                            if (isSelected)
+                            {
+                                // Unselect all board tiles.
+                                boardArr.ForEach(u => u.isSelected = false);
+                                // Move the selected piece(s) to the new board tile.
+                                pieces.Where(s => s.IsSelected).ToList().ForEach(s => s.Move(boardRow, boardCol));
+                                // Unselect all pieces.
+                                pieces.ForEach(u => u.IsSelected = false);
+                            }
                         }
                         leftClickStarted = false;
                     }
