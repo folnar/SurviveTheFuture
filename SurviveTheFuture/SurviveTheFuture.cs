@@ -91,8 +91,8 @@ namespace SurviveTheFuture
             // Add initial army men surrounding base houses.
             for (int i = 0; i < numrows; i++)
             {
-                pieces.Add(new GP_ArmyMan(i, 3, tileTexture.Width, tileTexture.Height));
-                pieces.Add(new GP_ArmyMan(i, 12, tileTexture.Width, tileTexture.Height));
+                pieces.Add(new GP_ArmyMan(i, 3, tileTexture.Width, tileTexture.Height, false));
+                pieces.Add(new GP_ArmyMan(i, 12, tileTexture.Width, tileTexture.Height, true));
             }
         }
 

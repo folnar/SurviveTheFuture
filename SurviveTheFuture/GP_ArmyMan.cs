@@ -7,7 +7,7 @@
         private int[,] moveMatrixDef = new int[3, 3]
         {
             { 1, 1, 1},
-            { 0, 1, 2},
+            { 1, 1, 3},
             { 1, 1, 1}
         };
 
@@ -17,8 +17,18 @@
             set { moveMatrixDef = value; }
         }
 
-        public GP_ArmyMan(int row, int col, int tileWidth, int tileHeight) :
+        public GP_ArmyMan(int row, int col, int tileWidth, int tileHeight, bool flipMoveMatrix) :
             base(spriteResLoc, row, col, tileWidth, tileHeight)
-        { }
+        {
+            if (flipMoveMatrix)
+            {
+                moveMatrixDef = new int[3, 3]
+                {
+                    { 1, 1, 1},
+                    { 3, 1, 1},
+                    { 1, 1, 1}
+                };
+            }
+        }
     }
 }
