@@ -32,9 +32,11 @@ namespace SurviveTheFuture
         /// Constructor
         /// </summary>
         /// <param name="tile">sprite for the tile texture</param>
+        /// <param name="tileHighlight">sprite which overlays gameboard tile to highlight it</param>
         /// <param name="location">location of the center of the gameboard</param>
         /// <param name="numcols">number of columns of tiles on the gameboard</param>
         /// <param name="numrows">number of rows of tiles on the gameboard</param>
+        /// <param name="tileShadingMap">a matrix of colors corresponding to the shading of the gameboard tiles</param>
         public GameBoard(Texture2D tile, Texture2D tileHighlight, Vector2 location, int numcols, int numrows, Color[,] tileShadingMap)
         {
             tileSprite = tile;

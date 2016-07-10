@@ -48,6 +48,9 @@ namespace SurviveTheFuture
         // pieces contained on tile
         List<GamePiece> pieces = new List<GamePiece>();
 
+        /// <summary>
+        /// constructor for game (akin to a main() for the game)
+        /// </summary>
         public SurviveTheFuture()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -94,6 +97,10 @@ namespace SurviveTheFuture
                 pieces.Add(new GP_ArmyMan(i, 3, tileTexture.Width, tileTexture.Height, false));
                 pieces.Add(new GP_ArmyMan(i, 12, tileTexture.Width, tileTexture.Height, true));
             }
+
+            // Add zombie kings to houses.
+            pieces.Add(new GP_ZombieKing(3, 1, tileTexture.Width, tileTexture.Height, false));
+            pieces.Add(new GP_ZombieKing(3, 14, tileTexture.Width, tileTexture.Height, true));
         }
 
         /// <summary>

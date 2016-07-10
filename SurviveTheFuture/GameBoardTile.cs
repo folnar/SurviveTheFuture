@@ -120,7 +120,7 @@ namespace SurviveTheFuture
 
                                 // NOTE: The following selection of legal moves code only considers the 0th indexed
                                 //       piece on this tile. The case of multiple pieces needs to be handled at some
-                                //       in the future. It may end up that multiple pieces are disallowed.
+                                //       time in the future. It may end up that multiple pieces are disallowed.
                                 // This selects legal moves to the left and right.
                                 boardArr
                                     .Where(s => s.boardCol >= (boardCol - legalMoves[0][1, 0]) &&
@@ -136,6 +136,42 @@ namespace SurviveTheFuture
                                                 s.boardCol == boardCol)
                                     .ToList()
                                     .ForEach(s => s.isSelected = true);
+
+                                // This selects legal moves forward up diagonal.
+                                for (int i = 0; i <= legalMoves[0][0, 2]; i++)
+                                {
+                                    boardArr
+                                        .Where(s => s.boardRow == (boardRow - i) &&
+                                                    s.boardCol == (boardCol + i))
+                                        .Single(s => s.isSelected = true);
+                                }
+
+                                // This selects legal moves forward down diagonal.
+                                for (int i = 0; i <= legalMoves[0][2, 2]; i++)
+                                {
+                                    boardArr
+                                        .Where(s => s.boardRow == (boardRow + i) &&
+                                                    s.boardCol == (boardCol + i))
+                                        .Single(s => s.isSelected = true);
+                                }
+
+                                // This selects legal moves backward up diagonal.
+                                for (int i = 0; i <= legalMoves[0][0, 0]; i++)
+                                {
+                                    boardArr
+                                        .Where(s => s.boardRow == (boardRow - i) &&
+                                                    s.boardCol == (boardCol - i))
+                                        .Single(s => s.isSelected = true);
+                                }
+
+                                // This selects legal moves backward down diagonal.
+                                for (int i = 0; i <= legalMoves[0][2, 0]; i++)
+                                {
+                                    boardArr
+                                        .Where(s => s.boardRow == (boardRow + i) &&
+                                                    s.boardCol == (boardCol - i))
+                                        .Single(s => s.isSelected = true);
+                                }
                             }
                             else
                             {
@@ -172,8 +208,10 @@ namespace SurviveTheFuture
                     // if click finished on tile, ...
                     if (rightClickStarted)
                     {
-                        //pieces.Clear();
-                        //isSelected = false;
+                        // Unselect all board tiles.
+                        boardArr.ForEach(u => u.isSelected = false);
+                        // Unselect all pieces.
+                        pieces.ForEach(u => u.IsSelected = false);
 
                         // HERE IS WHERE WE NEED TO BUILD THE POPUP MENU. WE'LL NEED A POPUP
                         // MENU CLASS FOR OPTIONS AND SAVING AND WHATNOT AND AN OBJECT WITH

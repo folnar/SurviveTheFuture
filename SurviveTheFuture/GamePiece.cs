@@ -31,8 +31,14 @@ namespace SurviveTheFuture
 
         #region Properties
 
+        /// <summary>
+        /// 
+        /// </summary>
         abstract public int[,] MoveMatrix { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int BoardRow
         {
             get
@@ -45,6 +51,9 @@ namespace SurviveTheFuture
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int BoardCol
         {
             get
@@ -56,6 +65,10 @@ namespace SurviveTheFuture
                 boardCol = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSelected { get; set; }
 
         #endregion
@@ -73,11 +86,12 @@ namespace SurviveTheFuture
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="sprite">sprite for the gamepiece texture</param>
+        /// <param name="spriteName">sprite for the gamepiece texture</param>
         /// <param name="row">index of the row on which the piece resides</param>
         /// <param name="col">index of the column on which the piece resides</param>
         /// <param name="tileWidth">width of the gameboard tile containing the piece</param>
         /// <param name="tileHeight">height of the gameboard tile containing the piece</param>
+        /// <param name="flipMoveMatrix">switch the direction of the game piece (true if piece moves leftward, false otherwise)</param>
         public GamePiece(string spriteName, int row, int col, int tileWidth, int tileHeight, bool flipMoveMatrix)
         {
             IsSelected = false;
@@ -144,6 +158,13 @@ namespace SurviveTheFuture
             drawRectangle = new Rectangle(xpos, ypos, sprite.Width, sprite.Height);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <param name="tileWidth"></param>
+        /// <param name="tileHeight"></param>
         protected void _init(int row, int col, int tileWidth, int tileHeight)
         {
             boardRow = row;
@@ -164,6 +185,10 @@ namespace SurviveTheFuture
 
         #endregion
 
+        /// <summary>
+        /// This method reverses the MoveMatrix to account for pieces on the right side
+        /// of the board which consider forward to be leftward.
+        /// </summary>
         protected void _flipMoveMatrix()
         {
             int[,] retval = new int[3, 3];
