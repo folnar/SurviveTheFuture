@@ -125,6 +125,11 @@ namespace SurviveTheFuture
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
 
+        /// <summary>
+        /// Draws the tile
+        /// </summary>
+        /// <param name="row">destination row</param>
+        /// <param name="col">destination column</param>
         public void Move(int row, int col)
         {
             boardRow = row;
@@ -135,7 +140,7 @@ namespace SurviveTheFuture
 
         #endregion
 
-        #region Private Methods
+        #region Protected Methods
 
         /// <summary>
         /// Moves the draw rectangle to a new gameboard tile.
@@ -183,8 +188,6 @@ namespace SurviveTheFuture
             setDrawRectangle();
         }
 
-        #endregion
-
         /// <summary>
         /// This method reverses the MoveMatrix to account for pieces on the right side
         /// of the board which consider forward to be leftward.
@@ -201,5 +204,7 @@ namespace SurviveTheFuture
             }
             MoveMatrix = retval;
         }
+
+        #endregion
     }
 }

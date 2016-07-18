@@ -39,7 +39,9 @@
     <ApplicationIcon>littleo_icon_32_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GP_ZombieGuard.cs" />
     <Compile Include="GP_ZombieKing.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="ResourceRegistry.cs" />
     <Compile Include="SurviveTheFuture.cs" />
     <Compile Include="GameBoard.cs" />

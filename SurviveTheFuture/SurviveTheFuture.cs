@@ -98,9 +98,12 @@ namespace SurviveTheFuture
                 pieces.Add(new GP_ArmyMan(i, 12, tileTexture.Width, tileTexture.Height, true));
             }
 
-            // Add zombie kings to houses.
+            // Add zombie kings to chests.
             pieces.Add(new GP_ZombieKing(3, 1, tileTexture.Width, tileTexture.Height, false));
             pieces.Add(new GP_ZombieKing(3, 14, tileTexture.Width, tileTexture.Height, true));
+
+            // Add zombie guards to hands.
+            pieces.Add(new GP_ZombieGuard(3, 6, tileTexture.Width, tileTexture.Height, false));
         }
 
         /// <summary>
