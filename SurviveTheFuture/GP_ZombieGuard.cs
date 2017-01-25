@@ -7,7 +7,7 @@ namespace SurviveTheFuture
 {
     class GP_ZombieGuard : GamePiece
     {
-        private static string spriteResLoc = @"graphics\gamePiece_ZombieKing_01";
+        private static string spriteResLoc = @"graphics\gamePiece_ZombieGuard_01";
 
         private int[,] moveMatrixDef = new int[3, 3]
         {
