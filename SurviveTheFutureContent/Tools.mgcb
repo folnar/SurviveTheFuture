@@ -57,3 +57,14 @@
 /processorParam:TextureFormat=Color
 /build:png/gamePiece_ZombieKing_01.png
 
+#begin png/gamePiece_ZombieGuard_01.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:png/gamePiece_ZombieGuard_01.png
+

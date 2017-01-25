@@ -140,19 +140,26 @@ namespace SurviveTheFuture
                                 // This selects legal moves forward up diagonal.
                                 for (int i = 0; i <= legalMoves[0][0, 2]; i++)
                                 {
-                                    boardArr
-                                        .Where(s => s.boardRow == (boardRow - i) &&
-                                                    s.boardCol == (boardCol + i))
-                                        .Single(s => s.isSelected = true);
+                                    if (!((boardRow - i) < 0 || (boardRow + i) > boardArr.Count) &&
+                                        )
+                                    {
+                                        boardArr
+                                            .Where(s => s.boardRow == (boardRow - i) &&
+                                                        s.boardCol == (boardCol + i))
+                                            .Single(s => s.isSelected = true);
+                                    }
                                 }
 
                                 // This selects legal moves forward down diagonal.
                                 for (int i = 0; i <= legalMoves[0][2, 2]; i++)
                                 {
-                                    boardArr
-                                        .Where(s => s.boardRow == (boardRow + i) &&
+                                    if (!((boardRow - i) < 0 || (boardRow + i) > boardArr.Count))
+                                    {
+                                        boardArr
+                                            .Where(s => s.boardRow == (boardRow + i) &&
                                                     s.boardCol == (boardCol + i))
                                         .Single(s => s.isSelected = true);
+                                    }
                                 }
 
                                 // This selects legal moves backward up diagonal.
