@@ -140,8 +140,7 @@ namespace SurviveTheFuture
                                 // This selects legal moves forward up diagonal.
                                 for (int i = 0; i <= legalMoves[0][0, 2]; i++)
                                 {
-                                    if (!((boardRow - i) < 0 || (boardRow + i) > boardArr.Count) &&
-                                        )
+                                    if (!((boardRow - i) < 0 || (boardRow + i) > boardArr.Count))
                                     {
                                         boardArr
                                             .Where(s => s.boardRow == (boardRow - i) &&
