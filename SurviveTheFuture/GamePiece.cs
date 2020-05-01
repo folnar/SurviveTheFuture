@@ -37,7 +37,7 @@ namespace SurviveTheFuture
         abstract public int[,] MoveMatrix { get; set; }
 
         /// <summary>
-        /// 
+        /// -
         /// </summary>
         public int BoardRow
         {

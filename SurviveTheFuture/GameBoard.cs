@@ -11,16 +11,16 @@ namespace SurviveTheFuture
         #region Fields
 
         static Texture2D tileSprite;
-        int halfTileWidth;
-        int halfTileHeight;
+        private readonly int halfTileWidth;
+        private readonly int halfTileHeight;
 
         List<GameBoardTile> boardArr = new List<GameBoardTile>();
 
         // board dimensions
-        int boardWidth;
-        int boardHeight;
-        int halfBoardWidth;
-        int halfBoardHeight;
+        private readonly int boardWidth;
+        private readonly int boardHeight;
+        private readonly int halfBoardWidth;
+        private readonly int halfBoardHeight;
         private static int boardOffsetX;
         private static int boardOffsetY;
 
